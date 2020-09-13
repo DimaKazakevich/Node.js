@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body style="background-color:#1F2739; color:#A7A1AE;">
+    <div id='name'></div>
+        
+    <script>
+        $(document).ready(function(){
+            $.get('http://localhost:8080/api/name', function(data) {
+                document.getElementById('name').innerHTML = data;
+            })
+        })
+    </script>
+</html>

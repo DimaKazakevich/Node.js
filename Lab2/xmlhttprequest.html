@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body onload="sendRequest()" style="background-color:#1F2739; color:#A7A1AE;">
+    <div id='name'></div>
+        
+    <script>
+        function sendRequest() {
+            let request = new XMLHttpRequest();
+            request.open('GET', 'http://localhost:8080/api/name', true);
+            request.onreadystatechange = () => {
+                if (request.readyState === 4 && request.status === 200) {
+                    console.log('OK. ' + request.responseText);
+                    document.getElementById('name').innerHTML = request.responseText;
+                }
+            };
+            request.send(null);
+        }
+    </script>
+</html>
+

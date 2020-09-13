@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body onload="sendRequest()" style="background-color:#1F2739; color:#A7A1AE;">
+    <div id='name'></div>
+        
+    <script>
+         async function sendRequest() {
+             await fetch('http://localhost:8080/api/name', {
+                method: 'GET',
+                headers: {'Content-Type': 'text/plain'}
+            }).then(async response => {
+                document.getElementById('name').innerHTML = await response.text();
+            });
+        }
+    </script>
+</html>

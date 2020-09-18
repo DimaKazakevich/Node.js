@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body onload="lol()" style="background-color:#1F2739; color:#A7A1AE;">
+    <div id='cycle'></div>
+    <script>
+        function lol() {
+        document.getElementById('cycle').innerHTML = '';
+        let n = 0;
+        const cycleStarted = Date.now();
+        for(var k = 0; k < 20; k++) {
+                fetch(`http://localhost:8080/fact?k=${k}`, {
+                method: 'GET', 
+                mode: 'no-cors',
+                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+            }).then(response => {return response.json();})
+              .then(pdata => {
+                  document.getElementById('cycle').innerHTML += `${n++}.Результат: ${Date.now() - cycleStarted} - ${pdata.k}/${pdata.fact}<br />`;
+              });
+        }
+    }
+    </script>
+</body>
+</html>

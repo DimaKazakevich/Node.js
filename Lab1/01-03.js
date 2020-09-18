@@ -16,7 +16,7 @@ http.createServer(function(request, response) {
         console.log('data', body); 
     });
     response.writeHead(200, {'Content-Type': 'text/html'});
-    response.end('<!DOCTYPE html>' +
+    request.on('end', () => response.end('<!DOCTYPE html>' +
                  '<html>' +
                  '<head>' +
                  '</head>' +
@@ -29,6 +29,6 @@ http.createServer(function(request, response) {
                     getHeadersMarkupString(request) +
                     `<h2>Body: ${body}</h2>` +
                  '</body>' +
-                 '</html>');
+                 '</html>'));
 }).listen(8080);
 

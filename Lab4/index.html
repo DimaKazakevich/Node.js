@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>index</title>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body style="background-color:#1F2739; color:#A7A1AE;">
+<div id="get_result"></div>
+<button onclick="Get()">GET</button>
+<script>
+    function Get() {
+        console.log('GET');
+        fetch('http://localhost:8080/api/db', {
+            method: 'GET',
+            mode: 'no-cors',
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+        })
+        .then(resp => { return resp.json(); })
+        .then(pdata => {
+            console.log('pdata', pdata);
+            document.getElementById('get_result').innerHTML = '';
+            pdata.forEach(element => {
+                document.getElementById('get_result').innerHTML += `${element.id} ${element.name} ${element.bday} <br />`
+            });
+        })
+    }
+</script>
+<br />
+<div style="padding: 20px;">
+    <div class="row">
+        <label class="col-2">Идентификатор</label>
+        <input type="number" class="col-3" id="id" min="0">
+    </div>
+    <div class="row">
+        <label class="col-2">ФИО</label>
+        <input type="text" class="col-3" id="Name">
+    </div>
+    <div class="row">
+        <label class="col-2">Дата рождения</label>
+        <input type="date" class="col-3" id="bdayPost">
+    </div>
+    <div class="row">
+        <button class="col-2" onclick="Post()">POST</button>
+    </div>
+</div>
+<br />
+<script>
+    function Post() {
+        console.log('POST');
+        fetch('http://localhost:8080/api/db', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+            body: JSON.stringify({id: id.value, name: Name.value, bday: bdayPost.value })
+        })
+        .then(resp => { return resp.json(); })
+        .then(pdata => {
+            console.log('pdata', pdata);
+            id.value = '';
+            Name.value = '';
+            bdayPost.value = '';
+        })
+    }
+</script>
+<div style="padding: 20px;">
+    <div class="row">
+        <label class="col-2">Идентификатор</label>
+        <input type="number" class="col-3" id="idToDel" min="0">
+    </div>
+    <div class="row">
+        <button class="col-2" onclick="Delete()">DELETE</button>
+    </div>
+</div>
+<script>
+    function Delete() {
+        console.log('DELETE');
+        fetch(`http://localhost:8080/api/db?id=${idToDel.value}`, {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+        })
+        .then(resp => { return resp.json(); })
+        .then(pdata => {console.log('pdata', pdata);})
+    }
+</script>
+<div style="padding: 20px;">
+    <div class="row">
+        <label class="col-2">Идентификатор</label>
+        <input type="number" class="col-3" id="idToPut" min="0">
+    </div>
+    <div class="row">
+        <button id="show" class="col-2" onclick="ShowDataById()">SHOW</button>
+    </div>
+    <br />
+    <div id="formToUpdate" style="display: none;">
+        <div class="row">
+            <label class="col-2">ФИО</label>
+            <input type="text" class="col-3" id="fio">
+        </div>
+        <div class="row">
+            <label class="col-2">Дата рождения</label>
+            <input type="date" class="col-3" id="bday">
+        </div>
+        <br />
+        <div class="row">
+            <button class="col-2" onclick="Put()">PUT</button>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $('#show').click(function(event) {
+            if(idToPut.value !== null && idToPut.value !== '') {
+                $('#formToUpdate').show();
+            }
+        });
+    })
+    function ShowDataById() {
+        console.log('GET');
+        fetch(`http://localhost:8080/api/db?id=${idToPut.value}`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json; charset=utf-8', 'Accept': 'application/json'},
+        })
+        .then(resp => { return resp.json(); })
+        .then(pdata => {
+            console.log('pdata', pdata);
+            fio.value = pdata.name;
+            document.getElementById('bday').value = pdata.bday;
+        })
+    }
+    function Put() {
+        console.log('PUT');
+        fetch('http://localhost:8080/api/db', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json; charset=utf-8', 'Accept': 'application/json'},
+            body: JSON.stringify({name: fio.value, bday: bday.value })
+        })
+        .then(resp => { 
+            $('#formToUpdate').hide();
+            return resp.json(); 
+        })
+    }
+</script>
+    <br />
+
+</body>
+</html>

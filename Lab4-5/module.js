@@ -39,6 +39,9 @@ function DB() {
 
         return this.getById(this.lastReqId);
     }
+    this.commit = () => {
+        console.log('Commit changes.');
+    }
 }
 
 util.inherits(DB, events.EventEmitter);

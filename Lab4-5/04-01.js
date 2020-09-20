@@ -2,6 +2,7 @@ let http = require('http');
 let url = require('url');
 let fs = require('fs');
 let data = require('./module');
+const { clearInterval } = require('timers');
 
 let db = new data.DB();
 
@@ -49,3 +50,31 @@ http.createServer(function(req, resp) {
         db.emit(req.method, req, resp);
     }
 }).listen(8080);
+
+process.stdin.setEncoding('utf-8');
+process.stdin.on('readable', () => {
+    let chunk = null;
+    let newArr = [];
+    var timer;
+    while((chunk = process.stdin.read()) != null) {
+        newArr = chunk.trim().split(' ');
+        if(newArr[0] === 'sd') {
+            setTimeout(function() {
+                console.log('Shut down');
+                process.exit(0);
+            }, newArr[1]);
+        }
+        if(newArr[0] === 'sc') {
+            console.log(newArr.length);
+            if(newArr.length === 2) {
+            timer =  setInterval(function() {
+                    db.commit();
+                    console.log(chunk);
+                }, newArr[1]);
+                console.log(timer);
+            } else if(newArr.length === 1) {
+                clearInterval(timer);
+            }
+        }
+    }
+});

@@ -7,6 +7,11 @@ sc  x	запустить функцию периодической фиксац�
  
 ss x 	запустить функцию сбора статистики, которая работает x секунд и собирает за этот промежуток   статистику о количестве выполненных запросов и фиксаций БД; 
 ввод команды ss  без параметра останавливает сбор статистики.     
+
+Приложение 05-01 должно принимать GET-запросы на http://localhost:5000/api/ss. 
+Ответ должен пересылать в json-формате результат сбора статистики. 
+Результат должен содержать дату и время  старта сбора статистики, дату и время окончания сбора статистики 
+(если статистика собирается в момент запроса, то это значение пустое), количество выполненных запросов и фиксаций БД 
 */
 
 let http = require('http');
@@ -18,6 +23,15 @@ const { clearInterval } = require('timers');
 let db = new data.DB();
 
 let amountOfRequests = 0;
+let timerIdSdCommand = null;
+let timerIdScCommand = null;
+let timerIdSsCommand = null;
+let amountOfCommits = 0;
+let startCollectStatistacs = null;
+let endCollectStatistic = null;
+let startYear, startMonth, startDay, startMin, startSec, startHours;
+let endYear,endMonth, endDay, endMin, endSec, endHours;
+let ssCommandIsRunnig = false;
 
 db.on('GET', (request, response) => {
     console.log('DB.GET');
@@ -65,13 +79,15 @@ http.createServer(function(req, resp) {
         resp.end(html);
     } else if(url.parse(req.url).pathname === '/api/db') {
         db.emit(req.method, req, resp);
+    } else if(url.parse(req.url).pathname === '/api/ss') {
+        resp.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+        if(!ssCommandIsRunnig) {
+            resp.end(JSON.stringify({"start": `${startYear}-${startMonth}-${startDay} ${startHours}:${startMin}:${startSec}`, "finish": `${endYear}-${endMonth}-${endDay} ${endHours}:${endMin}:${endSec}`, "request": `${amountOfRequests}`, "commits": `${amountOfCommits}`}));
+        } else {
+            resp.end(JSON.stringify({"start": `${startYear}-${startMonth}-${startDay} ${startHours}:${startMin}:${startSec}`, "finish": '', "request": `${amountOfRequests}`, "commits": `${amountOfCommits}`}));
+        }
     }
 }).listen(8080);
-
-let timerIdSdCommand = null;
-let timerIdScCommand = null;
-let timerIdSsCommand = null;
-let amountOfCommits = 0;
 
 process.stdin.setEncoding('utf-8');
 process.stdin.on('readable', () => {
@@ -106,10 +122,28 @@ process.stdin.on('readable', () => {
         }
         if(newArr[0] === 'ss') {
             if(newArr.length === 2) {
+                ssCommandIsRunnig = true;
+                console.log(`Server started collecting statistics. Result will be in ${newArr[1]} sec.`);
+                startCollectStatistacs = new Date();
+                startYear = startCollectStatistacs.getFullYear();
+                startMonth = startCollectStatistacs.getMonth();
+                startDay = startCollectStatistacs.getDay();
+                startHours = startCollectStatistacs.getHours();
+                startMin = startCollectStatistacs.getMinutes();
+                startSec = startCollectStatistacs.getSeconds();
+                amountOfRequests = 0;
+                amountOfCommits = 0;
                 timerIdSsCommand =  setTimeout(() => {
-                        console.log(`Server started collecting statistics. Result will be in ${newArr[1]} sec.`);
                         console.log(`Amount of completed requests - ${amountOfRequests}`);
-                        console.log(`Amount of completed requests - ${amountOfRequests}`);
+                        console.log(`Amount of completed commits - ${amountOfCommits}`);
+                        endCollectStatistic = new Date();
+                        endYear = endCollectStatistic.getFullYear();
+                        endMonth = endCollectStatistic.getMonth();
+                        endDay = endCollectStatistic.getDay();
+                        endHours = endCollectStatistic.getHours();
+                        endMin = endCollectStatistic.getMinutes();
+                        endSec = endCollectStatistic.getSeconds();
+                        ssCommandIsRunnig = false;
                     }, newArr[1] * 1000);
             } else if(newArr.length === 1) {
                 console.log('Server statistics collection has been stopped.')

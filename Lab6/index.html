@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>index</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+    html {
+        height: 100%;
+    }
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100%;
+        margin: 0;
+        background: #fff;
+        font-family: -apple-system, 'Segoe UI', sans-serif;
+    }
+    * {
+        box-sizing: border-box;
+    }
+    h2 {
+        margin: 0 0 1em;
+        font-size: 20px;
+    }
+    
+    .form-header {
+        width: 100%;
+        max-width: 400px;
+    }
+    section {
+        width: 100%;
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+        background: #f8f8f8;
+        border: 1px solid rgba(0,0,0,.1);
+        border-color: rgba(0,0,0,.05) rgba(0,0,0,.08) rgba(0,0,0,.1);
+        border-radius: 3px;
+        box-shadow: 0 3px 4px rgba(0,0,0,.05);
+    }
+    label {
+        display: block;
+        padding-bottom: 3px;
+        font-size: 12px;
+        font-weight: bold;
+        color: #555;
+        text-transform: uppercase;
+    }
+    .input {
+        width: 100%;
+        margin-bottom: 5px;
+        padding: 10px;
+        border: 1px solid rgba(0,0,0,.1);
+        border-radius: 3px;
+        background: #fff;
+        font: inherit;
+    }
+    .input:focus {
+        outline: none;
+        border-color: rgba(0,0,0,.3);
+    }
+    .form-field {
+        margin-bottom: 10px;
+        min-height: 86px;
+    }
+    .success {
+        font-size: 14px;
+        color: #155724;
+    }
+    .form-actions {
+        margin-top: 20px;
+    }
+    .btn {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background: #24b47e;
+        border: 1px solid rgba(0,0,0,.1);
+        border-width: 1px 1px 3px;
+        border-radius: 3px;
+        font: inherit;
+        color: #fff;
+        cursor: pointer;
+        text-shadow: 0 1px 0 rgba(0,0,0,.3), 0 1px 1px rgba(0,0,0,.2);
+    }
+    .btn:hover,
+    .btn:focus {
+        outline: none;
+        background: #2AA172;
+    }
+    .btn:active {
+        transform: translateY(1px);
+    }
+    </style>
+</head>
+<body style="background-color:lightgray; color:#A7A1AE;">
+    <div class="form-header">
+        <h2>Send us a message</h2>
+    </div>
+    <section>
+        <div class="form-field">
+            <label for="message">Message</label>
+            <textarea class="input" id="message" name="message" rows="4" autofocus></textarea>
+        </div>
+        <div class="form-field">
+            <label for="email">Email</label>
+            <input class="input" id="to" name="to" type="email" value="" />
+            <div class="success" style="display: none;" >Message sent successfully</div>
+        </div>
+        <div class="form-actions">
+            <button class="btn" type="submit" onclick="send()">Send</button>
+        </div>
+    </section>
+
+    <script>
+        function clearInputsAndShowMessage() {
+            to.value = '';
+            message.value = '';
+            setTimeout(function () {
+                $(".success").show();
+                setTimeout(function () {
+                    $(".success").hide();
+                }, 1500);
+            }, 0);
+        }
+
+        function send() {
+            fetch('http://localhost:8080/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({to: to.value, message: message.value })
+            });
+            clearInputsAndShowMessage();
+        }
+    </script>
+</body>
+</html>

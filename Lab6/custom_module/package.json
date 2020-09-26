@@ -1,0 +1,11 @@
+{
+  "name": "send2020",
+  "version": "1.0.1",
+  "description": "send message to kazak1629@gmail.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dima Kazakevich",
+  "license": "ISC"
+}

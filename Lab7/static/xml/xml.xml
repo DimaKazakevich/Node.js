@@ -1,0 +1,7 @@
+<bookstore>
+    <book>
+        <title>CLR via C#</title>
+        <author>Jeffrey Richter</author>
+        <year>2006</year>
+    </book>
+</bookstore>

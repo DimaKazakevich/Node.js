@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="js/script.js"></script>
+</head>
+<body style="background-color:#1F2739">
+    <a href="docx/index.docx">Кликни и получи лабу вне очереди!</a>
+    <br />
+    <video style="display: block;" controls='controls' src="video/video.mp4" autoplay='autoplay'></video>
+    <br />
+    <img src="img/grayLogo.png" alt="Wait pls" />
+    <br />
+    <div id='toJSON' style="color: white;"></div>
+    <br />
+    <div id='toXML' style="color: white;"></div>
+
+    <script>
+            fetch(`http://localhost:8080/json/json.json`, {
+                method: 'GET', 
+                mode: 'no-cors',
+                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+            }).then(response => {return response.json();})
+              .then(pdata => {
+                  document.getElementById('toJSON').innerHTML += `${JSON.stringify(pdata)}`;
+              });
+
+              fetch(`http://localhost:8080/xml/xml.xml`, {
+                method: 'GET', 
+                mode: 'no-cors',
+                headers: {'Content-Type': 'application/xml', 'Accept': 'application/xml'}
+            }).then(response => { return response.text();})
+              .then(pdata => {
+                document.getElementById('toXML').innerText += pdata;
+
+                /*
+                Output without xml tags.
+                let parser, xmlDoc;
+                parser = new DOMParser();
+                xmlDoc = parser.parseFromString(pdata,"text/xml");
+                document.getElementById("toXML").innerHTML += xmlDoc.getElementsByTagName("title")[0].childNodes[0].nodeValue + ' ';
+                document.getElementById("toXML").innerHTML += xmlDoc.getElementsByTagName("author")[0].childNodes[0].nodeValue + ' ';
+                document.getElementById("toXML").innerHTML += xmlDoc.getElementsByTagName("year")[0].childNodes[0].nodeValue + ' ';
+                */
+              });
+    </script>
+</body>
+</html>

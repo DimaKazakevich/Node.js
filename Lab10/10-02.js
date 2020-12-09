@@ -13,9 +13,9 @@ socket.onopen = () => {
     }, 25000)
 }
 
-socket.onclose = (e) => {
+/*socket.onclose = (e) => {
     console.log('socket.onclose', e);
-}
+}*/
 
 socket.onmessage = (e) => {
     console.log('socket.onmessage', e.data);

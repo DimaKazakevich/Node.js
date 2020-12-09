@@ -15,8 +15,8 @@ let httpServer = http.createServer((req, res) => {
 httpServer.listen(3000);
 
 let k = 0;
-let webSocket = require('ws');
-let wsServer = new webSocket.Server({port: 4000, host:'localhost', path:'/wsserver'})
+let WebSocket = require('ws');
+let wsServer = new WebSocket.Server({port: 4000, host:'localhost', path:'/wsserver'})
 wsServer.on('connection', (ws) => {
     let clientK = 0;
     ws.on('message', message => {
